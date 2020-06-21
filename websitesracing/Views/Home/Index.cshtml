@@ -3,64 +3,44 @@
 }
 
 <style>
-    #content label {
-        width: 150px;
+    .myProgress {
+        width: 100%;
+        background-color: #ddd;
     }
 
-    #content input[type=submit] {
-        margin-left: 154px;
-        width: 120px;
-        padding: 5px 15px;
-        background: #ff6a00;
-        border: 0none;
-        cursor: pointer;
-        color: #fff;
-    }
-
-    .error {
-        color: red;
-    }
-
-    .color-default {
-        color: #000;
-    }
-
-    .color-red {
-        color: red;
-    }
-
-    .color-green {
-        color: green;
-    }
-
-    #content input.ng-dirty.ng-invalid {
-        border: 1px solid red;
-        background-color: #fff4f4;
+    .myBar {
+        width: 5%;
+        height: 30px;
+        background-color: #4CAF50;
+        text-align: center;
+        line-height: 30px;
+        color: white;
+        background-image: url('../Content/images/car.png');
+        background-position: right;
+        background-repeat: no-repeat;
     }
 </style>
 
-<div id="content" ng-controller="CustomerController">
-    <span ng-show="isViewLoading" class="viewLoading">
-        <img src="~/Content/images/ng-loader.gif" /> loading...
-    </span>
-    <div ng-class="result">{{message}}</div>
-    <hr />
-    <form ng-submit="submitForm()" name="frmCustomer">
-        <div>
-            <label for="email">Customer Name</label>
-            <input type="text" ng-model="cust.CustName" name="cname" placeholder="Enter your name" requiredng-minlength="4" ng-maxlength="14" />
-            <span class="error" ng-show="(frmCustomer.$dirty||submitted)&&frmCustomer.cname.$error.required">Customer name is Required</span>
-            <span class="error" ng-show="frmCustomer.$dirty&&frmCustomer.cname.$error.minlength">Minimum length required is 5</span>
-            <span class="error" ng-show="frmCustomer.$dirty&&frmCustomer.cname.$error.maxlength">Minimum length required is 15</span>
+<div id="content" ng-controller="HomeController">
+    <form ng-submit="submitForm()" name="frmCalculate">
+        <div class="row" style="margin-top:15px;" ng-repeat="site in Websites">
+            <div class="col-md-2 col-xs-12">
+                <input type="text" ng-model="site.Name" value="" />
+            </div>
+            <div class="col-md-8 col-xs-12">
+                <div class="myProgress">
+                    <div class="myBar" ng-style="{width: site.CurrentWidth + '%'}" id="myBar{{site.Id}}">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2 col-xs-12">
+                <input type="text" ng-model="site.DisplayResult" value="" />
+            </div>
         </div>
+
+        <hr />
         <div>
-            <label for="email">E-mail address</label>
-            <input type="email" ng-model="cust.CustEmail" name="email" placeholder="Enter your Email" required />
-            <span class="error" ng-show="(frmCustomer.$dirty||submitted)&&frmCustomer.email.$error.required">EmailId is Required!</span>
-            <span class="error" ng-show="(frmCustomer.$dirty||submitted)&&frmCustomer.$error.email">Invalid EmailId!</span>
-        </div>
-        <div>
-            <input type="submit" value="Submit" ng-disabled="myForm.$invalid">
+            <input type="submit" value="Run">
         </div>
     </form>
 </div>
@@ -69,5 +49,5 @@
     <script src="~/Scripts/jquery-3.5.1.min.js"></script>
     <script src="~/Scripts/angular.min.js"></script>
     <script src="~/Scripts/angular-route.min.js"></script>
-    <script src="~/ControllersNg/CustomerController.js"></script>
+    <script src="~/ControllersNg/HomeController.js"></script>
 }

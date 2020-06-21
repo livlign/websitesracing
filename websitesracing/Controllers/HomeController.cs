@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Configuration;
 using System.Web.Mvc;
@@ -14,42 +18,39 @@ namespace websitesracing.Controllers
             return View();
         }
 
-        public ActionResult About()
+        public class Website
         {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
-        }
-
-        public ActionResult Contact()
-        {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
-        }
-
-        public class Customer
-        {
-            public string CustName { get; set; }
-            public string CustEmail { get; set; }
+            public int CurrentWidth { get; set; }
+            public string Name { get; set; }
+            public int DataLength { get; set; }
+            public long LoadingTime { get; set; }
+            public string Result { get; set; }
         }
 
         [HttpPost]
-        public JsonResult CreateCustomer(Customer model)
+        public async Task<JsonResult> LoadWebsites(List<Website> websites)
         {
-            if (ModelState.IsValid)
+            List<Task> tasks = new List<Task>();
+            foreach (var site in websites)
             {
-                //Data save to database  
-                return Json(new
-                {
-                    success = true
-                });
+                tasks.Add(Task.Run(() => DownloadWebsite(site)));
             }
-            return Json(new
-            {
-                success = false,
-                errors = ModelState.Keys.SelectMany(i => ModelState[i].Errors).Select(m => m.ErrorMessage).ToArray()
-            });
+
+            await Task.WhenAll(tasks);
+
+            return Json(websites);
+        }
+
+        private void DownloadWebsite(Website site)
+        {
+            var client = new WebClient();
+            var watch = Stopwatch.StartNew();
+            var result = client.DownloadString(site.Name);
+            watch.Stop();
+            site.DataLength = result.Length;
+            site.LoadingTime = watch.ElapsedMilliseconds;
+
+            site.Result = site.LoadingTime.ToString("N0") + " ms - " + site.DataLength.ToString("N0") + " Chars";
         }
     }
 }
