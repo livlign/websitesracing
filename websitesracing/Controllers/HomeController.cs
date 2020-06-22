@@ -24,6 +24,7 @@ namespace websitesracing.Controllers
             public string Name { get; set; }
             public int DataLength { get; set; }
             public long LoadingTime { get; set; }
+            public bool IsLoaded { get; set; }
             public string Result { get; set; }
         }
 
@@ -43,14 +44,25 @@ namespace websitesracing.Controllers
 
         private void DownloadWebsite(Website site)
         {
-            var client = new WebClient();
-            var watch = Stopwatch.StartNew();
-            var result = client.DownloadString(site.Name);
-            watch.Stop();
-            site.DataLength = result.Length;
-            site.LoadingTime = watch.ElapsedMilliseconds;
+            var result = "";
+            try
+            {
+                var client = new WebClient();
+                var watch = Stopwatch.StartNew();
+                var siteData = client.DownloadString(site.Name);
+                watch.Stop();
+                site.DataLength = siteData.Length;
+                site.LoadingTime = watch.ElapsedMilliseconds;
+                site.IsLoaded = true;
+                result = site.LoadingTime.ToString("N0") + " ms - " + site.DataLength.ToString("N0") + " Chars";
+            }
+            catch (Exception)
+            {
+                site.IsLoaded = false;
+                result = "Error loading website";
+            }
 
-            site.Result = site.LoadingTime.ToString("N0") + " ms - " + site.DataLength.ToString("N0") + " Chars";
+            site.Result = result;
         }
     }
 }

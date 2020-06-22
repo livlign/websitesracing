@@ -23,9 +23,15 @@
 
 <div id="content" ng-controller="HomeController">
     <form ng-submit="submitForm()" name="frmCalculate">
-        <div class="row" style="margin-top:15px;" ng-repeat="site in Websites">
+        <div style="margin-top:10px;">
+            <input class="btn btn-success" type="submit" value="Run">
+            <a class="btn btn-primary" ng-click="AddWebsite()">Add Website</a>
+        </div>
+        <hr />
+        <div class="row" ng-repeat="site in Websites">
             <div class="col-md-2 col-xs-12">
                 <input type="text" ng-model="site.Name" value="" />
+                <a ng-click="RemoveWebsite(site)">Remove</a>
             </div>
             <div class="col-md-8 col-xs-12">
                 <div class="myProgress">
@@ -36,11 +42,6 @@
             <div class="col-md-2 col-xs-12">
                 <input type="text" ng-model="site.DisplayResult" value="" />
             </div>
-        </div>
-
-        <hr />
-        <div>
-            <input type="submit" value="Run">
         </div>
     </form>
 </div>

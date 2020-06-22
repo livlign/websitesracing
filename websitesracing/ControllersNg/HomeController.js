@@ -28,7 +28,7 @@
         angular.forEach($scope.Websites, function (site) {
             site.CurrentWidth = 5;
             site.Result = '';
-        }); 
+        });
 
         //$http service that send or receive data from the remote server
         $http({
@@ -39,22 +39,39 @@
             $scope.Websites = data.data;
 
             angular.forEach($scope.Websites, function (site) {
-                var currentWidth = site.CurrentWidth;
-                $interval(function () {
-                    if (currentWidth < 100) {
-                        currentWidth++;
-                        site.CurrentWidth = currentWidth;
-                    }
-                    else {
-                        site.DisplayResult = site.Result;
-                    }
-                }, site.LoadingTime/50);   
+                if (site.IsLoaded) {
+                    var currentWidth = site.CurrentWidth;
+                    $interval(function () {
+                        if (currentWidth < 100) {
+                            currentWidth++;
+                            site.CurrentWidth = currentWidth;
+                        }
+                        else {
+                            site.DisplayResult = site.Result;
+                        }
+                    }, site.LoadingTime / 50);
+                } else {
+                    site.DisplayResult = site.Result;
+                }
             });
 
-                  
+
         }).catch(function onError(data, status, headers, config) {
             $scope.errors = [];
         });
+    }
+
+    $scope.AddWebsite = function () {
+        var newsite = {
+            Name: "",
+            CurrentWidth: 5
+        };
+        $scope.Websites.push(newsite);
+    }
+
+    $scope.RemoveWebsite = function (site) {
+        var index = $scope.Websites.indexOf(site);
+        $scope.Websites.splice(index, 1);    
     }
 }).config(function ($locationProvider) {
     //default = 'false'
