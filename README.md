@@ -1,5 +1,5 @@
 # websitesracing
-Test website loading speed using async/await .net, angularjs
+Test website loading speed using async/await C#, angularjs
 
 <img src="https://thumbs.gfycat.com/TediousGreedyElephant-size_restricted.gif"/>
 
